@@ -40,7 +40,7 @@ Where [scrape-wikipedia.py](scripts/scrape-wikipedia.py) extracts the table from
 tests the data.
 
 ## Automate the project with Travis
-If you haven't added the project to travis-ci yet, go to your travis profile and switch the project on. Now you can add a ``.travis`` file :
+If you haven't added the project to travis-ci yet, go to your travis profile and switch the project on. Then you can add a ``.travis`` file :
 
     language: python
     python:
@@ -50,15 +50,54 @@ If you haven't added the project to travis-ci yet, go to your travis profile and
       - pip install --upgrade -r scripts/requirements.txt
 
     script:
+      - cd scripts
       - make
 
-
+Now every time you commit a change in the repository, the data is validatd by travis. You'll be notified if the data is invalid.
 
 ## How
 
-The question now is : how to commit file ``s-p-500-companies.csv`` and push it back to the repository once it has been processed ?
+The question now is : how to commit file ``sp500-companies.csv`` and push it back to the repository once it has been processed ?
 
 ### Authentication
-You can push data to a git repository on github
+To push data to a git repository on github, you need to be authenticated, and the git way is to use ssh keys. We'll create 
+a specific key for the project :
 
+    ssh-keygen -t rsa -b 4096 -C "ex-continuous-processing" -f ~/.ssh/ex-continuous-processing
+
+Before we configure the project, we'll configure our local computer to be able to work.
+
+``.git/config``
+
+[remote "origin"]
+	url = git@github.com:lexman/ex-continuous-processing.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+
+``~/.ssh/config``
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/ex-continuous-processing
+
+    
+Add pub key to project with write access
+
+Now we can write on the project :
+
+    touch test-write
+    git add test-write
+    git commit -m "Testing write locally"
+    git push
+
+And put back everithing to normal
+
+    git rm test-write
+    git commit -m "Test was Ok"
+    git push
+
+
+# Push the changes after processing
+    
+    
 # 
