@@ -15,7 +15,7 @@ valid.txt: ../data/sp500-companies.csv ../datapackage.json test_data.py
 
 pushed.txt: valid.txt
 	git add ../data/sp500-companies.csv
-	git commit -m "[data] automatic update"
+	git commit -m "[data] automatic update" || exit 0
 	git pull --rebase
 	git push
 	echo "Update has been pushed if there was one" > pushed.txt
