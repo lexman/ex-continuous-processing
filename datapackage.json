@@ -1,0 +1,33 @@
+{
+  "name": "ex-continuous-processing",
+  "title": "List of S&P 500 Companies for continuous processing example",
+  "version": "0.1.0",
+  "license": "PDDL-1.0",
+  "resources": [
+    {
+      "name": "s-p-500-companies",
+      "path": "data/sp500-companies.csv",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {
+            "name": "Symbol",
+            "description": "",
+            "type": "string"
+          },
+          {
+            "name": "Name",
+            "description": "",
+            "type": "string"
+          },
+          {
+            "name": "Sector",
+            "description": "",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
