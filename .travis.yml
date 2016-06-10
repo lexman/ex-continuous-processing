@@ -11,6 +11,6 @@ install:
   - pip install --upgrade -r scripts/requirements.txt
 
 script:
-  - .git/config
+  - cat .git/config
   - cd scripts
   - make
