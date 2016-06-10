@@ -1,6 +1,10 @@
 language: python
 python:
   - 2.7
+  
+before_script:
+  - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
