@@ -1,0 +1,6 @@
+xlrd==0.9.3
+unicodecsv
+jinja2
+beautifulsoup4
+git+git://github.com/frictionlessdata/datapackage-py.git
+goodtables
