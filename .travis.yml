@@ -6,6 +6,8 @@ before_script:
   - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
+  - git config --global user.email "update-bot@lexman.org"
+  - git config --global user.name "Update bot"
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
