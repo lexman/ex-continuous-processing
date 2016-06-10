@@ -5,10 +5,12 @@ python:
 before_script:
   - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
+  - cat ~/.ssh/config
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
 
 script:
+  - .git/config
   - cd scripts
   - make
