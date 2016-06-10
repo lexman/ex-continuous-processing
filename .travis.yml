@@ -6,4 +6,5 @@ install:
   - pip install --upgrade -r scripts/requirements.txt
 
 script:
+  - cd scripts
   - make
