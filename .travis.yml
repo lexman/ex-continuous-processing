@@ -26,5 +26,4 @@ script:
 after_success:
   - git status
   - make pushed.txt
-  - git status
   
