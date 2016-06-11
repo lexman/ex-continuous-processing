@@ -1,12 +1,15 @@
 language: python
 python:
   - 2.7
-  
+
 before_script:
   - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
-  - git config --global user.email "update-bot@lexman.org"
+  - echo $TRAVIS_TAG
+  - echo $TRAVIS_BRANCH
+  - echo $TRAVIS_COMMIT
+  - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
 
 install:
@@ -16,3 +19,5 @@ script:
   - cat .git/config
   - cd scripts
   - make
+
+  
