@@ -27,14 +27,11 @@ script:
   - cd scripts
   - make valid.txt
   - git status
-
-after_success:
   - git status
   - DATE=`date`
   - echo "test,test,$DATE" >> ../data/sp500-companies.csv
   - git status
-  - git checkout -B $TRAVIS_BRANCH
-  - git status
-  - make pushed.txt
-  - git status
-  
+
+deploy:
+  provider: script
+  script: git checkout -B $TRAVIS_BRANCH && make pushed.txt
