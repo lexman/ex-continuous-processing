@@ -9,8 +9,10 @@ before_script:
   - echo $TRAVIS_TAG
   - echo $TRAVIS_BRANCH
   - echo $TRAVIS_COMMIT
+  - git status
   - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
+  
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
@@ -19,5 +21,10 @@ script:
   - cat .git/config
   - cd scripts
   - make
+  - git status
 
+after_success:
+  - git status
+  - make pushed.txt
+  - git status
   
