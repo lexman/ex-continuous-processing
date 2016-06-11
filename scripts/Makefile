@@ -1,4 +1,4 @@
-all: pushed.txt
+all: valid.txt
 
 List_of_S%26P_500_companies.html:
 	curl -o List_of_S%26P_500_companies.html "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
@@ -16,8 +16,7 @@ valid.txt: ../data/sp500-companies.csv ../datapackage.json test_data.py
 pushed.txt: valid.txt
 	git add ../data/sp500-companies.csv
 	git commit -m "[data] automatic update" || exit 0
-	git pull --rebase
 	git push
-	echo "Update has been pushed (if there was some change)" > pushed.txt
+	echo "Update has been pushed if there was a change" > pushed.txt
 
 .PHONY: all
