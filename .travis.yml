@@ -3,16 +3,16 @@ python:
   - 2.7
 
 before_script:
-  - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
+  - echo $SSH_PUSH_KEY | tr " " "\n" > ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
   - echo $TRAVIS_TAG
   - echo $TRAVIS_BRANCH
   - echo $TRAVIS_COMMIT
   - git status
+  - git config --global push.default simple
   - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
-  
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
