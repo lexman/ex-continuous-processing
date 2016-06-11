@@ -28,7 +28,7 @@ after_success:
   - $DATE=`date`
   - echo "test,test$DATE" >> ../data/sp500-companies.csv
   - git status
-  - git checkout -b $TRAVIS_BRANCH
+  - git checkout -B $TRAVIS_BRANCH
   - git status
   - make pushed.txt
   - git status
