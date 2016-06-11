@@ -20,10 +20,12 @@ install:
 script:
   - cat .git/config
   - cd scripts
-  - make
+  - make valid.txt
+  - date >> ../data/sp500-companies.csv
   - git status
 
 after_success:
   - git status
+  - git checkout -b $TRAVIS_BRANCH
   - make pushed.txt
   
