@@ -3,9 +3,9 @@ python:
   - 2.7
 
 before_script:
-  - echo "-----BEGIN RSA PRIVATE KEY----- >> ~/.ssh/id_rsa
+  - echo "-----BEGIN RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - echo $SSH_PUSH_KEY | sed 's/ / \n/g' >> ~/.ssh/id_rsa
-  - echo "-----END RSA PRIVATE KEY----- >> ~/.ssh/id_rsa
+  - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - cat ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
