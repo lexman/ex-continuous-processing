@@ -7,7 +7,7 @@ before_script:
   - echo "$SSH_PUSH_KEY " | sed 's/ / \n/g' >> ~/.ssh/id_rsa
   - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - cat ~/.ssh/id_rsa
-  - diff ex-continuous-processing ~/.ssh/id_rsa
+  - diff ex-continuous-processing ~/.ssh/id_rsa || exit 0
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
   - ssh -vvvv git@github.com
