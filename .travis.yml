@@ -21,11 +21,15 @@ script:
   - cat .git/config
   - cd scripts
   - make valid.txt
-  - date >> ../data/sp500-companies.csv
   - git status
 
 after_success:
   - git status
+  - $DATE=`date`
+  - echo "test,test$DATE" >> ../data/sp500-companies.csv
+  - git status
   - git checkout -b $TRAVIS_BRANCH
+  - git status
   - make pushed.txt
+  - git status
   
