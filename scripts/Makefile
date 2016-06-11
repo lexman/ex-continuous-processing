@@ -18,6 +18,6 @@ pushed.txt: valid.txt
 	git commit -m "[data] automatic update" || exit 0
 	git pull --rebase
 	git push
-	echo "Update has been pushed if there was one" > pushed.txt
+	echo "Update has been pushed (if there was some change)" > pushed.txt
 
 .PHONY: all
