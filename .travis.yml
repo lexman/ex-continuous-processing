@@ -33,5 +33,6 @@ script:
   - git status
   
 deploy:
+  skip_cleanup: true
   provider: script
   script: git checkout -B $TRAVIS_BRANCH && make pushed.txt
