@@ -8,6 +8,7 @@ before_script:
   - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - cat ~/.ssh/id_rsa
 #  - diff ex-continuous-processing ~/.ssh/id_rsa || exit 0
+  - cp ex-continuous-processing ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
   - ssh -vvvv git@github.com
@@ -31,7 +32,7 @@ script:
   - DATE=`date`
   - echo "test,test,$DATE" >> ../data/sp500-companies.csv
   - git status
-
+  
 deploy:
   provider: script
   script: git checkout -B $TRAVIS_BRANCH && make pushed.txt
