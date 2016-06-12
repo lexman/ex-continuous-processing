@@ -15,14 +15,17 @@ before_script:
   - echo "$SSH_PUSH_KEY" | sed 's/ /\n/g' >> ~/.ssh/id_rsa
   - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-# Add the git:// remote
-  - git remote add publish git@github.com:lexman/ex-continuous-processing.git
+# Add remote for ssh access
+  - git remote add publish git@github.com:$TRAVIS_REPO_SLUG.git
 
 script:
   - cd scripts
   - make valid.txt
-  
+
+after_script:
+  - git checkout -B $TRAVIS_BRANCH 
+
 deploy:
   skip_cleanup: true
   provider: script
-  script: git checkout -B $TRAVIS_BRANCH && make pushed.txt
+  script: make pushed.txt
