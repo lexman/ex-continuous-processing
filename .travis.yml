@@ -11,7 +11,7 @@ before_script:
   - cp ex-continuous-processing ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
   - cat ~/.ssh/config
-  - ssh -vvvv git@github.com
+  - ssh -vvvv git@github.com || echo "Ssh has been tested"
   - echo $TRAVIS_TAG
   - echo $TRAVIS_BRANCH
   - echo $TRAVIS_COMMIT
