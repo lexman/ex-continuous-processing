@@ -8,9 +8,8 @@ before_script:
   - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
   - cat ~/.ssh/id_rsa
   - diff ex-continuous-processing ~/.ssh/id_rsa || echo "toto"
-  - cp ex-continuous-processing ~/.ssh/id_rsa
+#  - cp ex-continuous-processing ~/.ssh/id_rsa
   - chmod 600 ~/.ssh/id_rsa
-  - cat ~/.ssh/config
   - ssh -vvvv git@github.com || echo "Ssh has been tested"
   - echo $TRAVIS_TAG
   - echo $TRAVIS_BRANCH
@@ -20,6 +19,7 @@ before_script:
   - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
   - git remote add publish git@github.com:lexman/ex-continuous-processing.git
+  - cat ~/.ssh/config
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
@@ -28,10 +28,6 @@ script:
   - cat .git/config
   - cd scripts
   - make valid.txt
-  - git status
-  - DATE=`date`
-  - echo "test,test,$DATE" >> ../data/sp500-companies.csv
-  - git status
   
 deploy:
   skip_cleanup: true
