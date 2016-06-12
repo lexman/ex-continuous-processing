@@ -22,7 +22,8 @@ script:
   - cd scripts
   - make valid.txt
 
-after_script:
+before_deploy:
+# Git is in detached HEAD, so we get back on the branch we are supposed to be
   - git checkout -B $TRAVIS_BRANCH 
 
 deploy:
