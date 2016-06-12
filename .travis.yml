@@ -28,7 +28,6 @@ script:
   - cd scripts
   - make valid.txt
   - git status
-  - git status
   - DATE=`date`
   - echo "test,test,$DATE" >> ../data/sp500-companies.csv
   - git status
