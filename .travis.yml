@@ -2,30 +2,23 @@ language: python
 python:
   - 2.7
 
-before_script:
-  - echo "-----BEGIN RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
-  - echo "$SSH_PUSH_KEY" | sed 's/ /\n/g' >> ~/.ssh/id_rsa
-  - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
-  - cat ~/.ssh/id_rsa
-  - diff ex-continuous-processing ~/.ssh/id_rsa || echo "toto"
-#  - cp ex-continuous-processing ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - ssh -vvvv git@github.com || echo "Ssh has been tested"
-  - echo $TRAVIS_TAG
-  - echo $TRAVIS_BRANCH
-  - echo $TRAVIS_COMMIT
-  - git status
+install:
+  - pip install --upgrade -r scripts/requirements.txt
+# Avoid warnings from git :
   - git config --global push.default simple
   - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
-  - git remote add publish git@github.com:lexman/ex-continuous-processing.git
-  - cat ~/.ssh/config
 
-install:
-  - pip install --upgrade -r scripts/requirements.txt
+before_script:
+# Add the ssh key
+  - echo "-----BEGIN RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
+  - echo "$SSH_PUSH_KEY" | sed 's/ /\n/g' >> ~/.ssh/id_rsa
+  - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+# Add the git:// remote
+  - git remote add publish git@github.com:lexman/ex-continuous-processing.git
 
 script:
-  - cat .git/config
   - cd scripts
   - make valid.txt
   
