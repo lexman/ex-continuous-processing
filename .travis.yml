@@ -19,6 +19,7 @@ before_script:
   - git config --global push.default simple
   - git config --global user.email "datasets-update-bot@lexman.org"
   - git config --global user.name "Update bot"
+  - git remote add publish git@github.com:lexman/ex-continuous-processing.git
 
 install:
   - pip install --upgrade -r scripts/requirements.txt
