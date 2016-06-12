@@ -146,6 +146,8 @@ before_script:
   - git config --global user.name "Update bot"
 
 
+  
+[Skip ci]
 
 
 # IDEAS
