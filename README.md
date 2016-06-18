@@ -1,20 +1,18 @@
 # How to update a datapackage with travis-ci
 This tutorial is about using [travis-ci](http://travis-ci.com) to run packaging scripts to update datapackages. The purpose is to achieve
-__continuous processing__ : *devliver updated data every time something changes : either the source data or the processing code*.
+__continuous processing__ : *deliver updated data every time something changes, either the source data or the processing code*.
 
 The whole tutorial exposes a simplified version of [s-and-p-500-companies](http://data.okfn.org/data/core/s-and-p-500-companies) which scrapes
 the list of companies from Wikipedia to creates a datapackage.
 
 
-
-## Why
-
-
 ## Prerequisite
 This tutorial assumes you already have a git project that contains a datapackage. This project has a ``script`` 
-directory in which the ``Makefile`` retrieve remote data to create the core of the datapackage in the ``data`` directory. Also, 
-you need to have tests to validate the data produced **before** you publish it. See if you don't have tests, stop reading this and jump
-to this really [good article](http://okfnlabs.org/blog/2016/05/17/automated-data-validation.html).
+directory in which the ``Makefile`` retrieve remote data to create the core of the datapackage in the ``data`` directory. 
+
+### Validation of data
+Also, you need to have tests to validate the data produced **before** you publish it. See if you don't have tests, stop 
+reading this and jump to this really [good article](http://okfnlabs.org/blog/2016/05/17/automated-data-validation.html).
 
 So the [``scripts/Makefile``](scritps/Makefile) in your project should look like our example's :
 
@@ -39,7 +37,7 @@ So the [``scripts/Makefile``](scritps/Makefile) in your project should look like
 Where [scrape-wikipedia.py](scripts/scrape-wikipedia.py) extracts the table from the wikipedia page into a csv file and [test-data.py](scripts/test-data.py)
 tests the data.
 
-## Automate the project with Travis
+### Automate the project with Travis
 If you haven't added the project to travis-ci yet, go to your travis profile and switch the project on. Then you can add a ``.travis`` file :
 
     language: python
@@ -55,7 +53,7 @@ If you haven't added the project to travis-ci yet, go to your travis profile and
 
 Now every time you commit a change in the repository, the data is validatd by travis. You'll be notified if the data is invalid.
 
-## How
+## How to update the datapackage automatically ?
 
 The question now is : how to commit file ``sp500-companies.csv`` and push it back to the repository once it has been processed ?
 
@@ -80,7 +78,7 @@ If we needed to work with several repositories, we could also have created a
 [specific github account](https://developer.github.com/guides/managing-deploy-keys/#machine-users), like
 [datasets-update-bot](https://github.com/datasets-update-bot).
 
-## Work locally
+### Work locally
     
 Before we set travis-ci, we'll configure our local computer to be able to work on the project and test it.
 
@@ -114,7 +112,7 @@ And roll-back everything to normal :
     git push publish
 
 
-## Push the changes after processing
+### Push the changes after processing
 Now that our workstation is able to write to github, we can automate publication with this new rule at the end of the ``Makefile`` :
 
     pushed.txt: valid.txt ../data/sp500-companies.csv
@@ -133,9 +131,9 @@ The git part of this code needs to be explained :
     $ make pushed.txt
     > blabla
     
-# Configure travis-ci to run the project
+## Configure travis-ci to run the project
 
-## Configure the ssh key
+### Configure the ssh key
 
 At the moment, if we push the code above to github, travis-ci will fail because it has not been configured yet. We'll have to enter
 the private key in the project's [settings](https://travis-ci.org/lexman/ex-continuous-processing/settings) so that travis 
@@ -144,7 +142,7 @@ can write to github.
 SCREENSHOT
 
 Open your private key with your favorite text editor and copy the inner part **without** the header (``-----BEGIN RSA PRIVATE KEY-----``) nor
-the footer (``-----END RSA PRIVATE KEY-----``) and paste it into travis settings as an environment variable called ``SSH_PUSH_KEY``. Your 
+the footer (``-----END RSA PRIVATE KEY-----``) and paste **into quotes** it into travis settings as an environment variable called ``SSH_PUSH_KEY``. Your 
 browser will paste it into one line. Before you add the variable, make sure the *Display value in build log* button is set to off, so that 
 your key remains secret all the time.
 
@@ -159,7 +157,7 @@ Now we'll have to recompose the key in the build, by adding a ``before_script`` 
       - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
       - chmod 600 ~/.ssh/id_rsa
 
-## Configure git
+### Configure git
 
 We also have to add the ``publish`` remote to the repository in the ``before_script`` section, as we have done in local :
 
@@ -182,7 +180,7 @@ We also have to set a few more things in git, to avoid useless warning messages 
 
 After all this configuration, Travis will be able to write to our repository...      
 
-## Publish !
+### Publish !
 
 Travis has a specific step for deploying a build that is well suited for our task :
 
@@ -195,7 +193,7 @@ Travis has a specific step for deploying a build that is well suited for our tas
 is to prevent travis from reverting the changes we made in the build before publish.
 
 
-## Run the script on the right branch
+### Run the script on the right branch
 
 Unfortunately this is not enough yet to work, because travis checks out the repository in 
 [detached head state](http://alblue.bandlem.com/2011/08/git-tip-of-week-detached-heads.html) so we've got
@@ -206,7 +204,57 @@ but it is easier to add a ``before_deploy`` section :
     # Git is in detached HEAD, so we get back on the branch we are supposed to be
       - git checkout -B $TRAVIS_BRANCH 
 
-Now we can see our travis build 
+Now we can see our travis build green !
+
+### One more step
+
+We can see two green builds ! Because when the first one succeeded, it pushed the data... Which triggered a new build !
+We have to add [Skip ci] to the commit message to prevent endless builds. So in the ``Makefile``, the ``git commit`` 
+instruction will be changed to :
+
+	git commit -m "[data][skip ci] automatic update" || exit 0
+
+## More control over your script
+
+### But I don't want to publish updated data every time I push some change !
+
+If you're used to commit half finished scripts and you want to control when you publish the data, you can deploy 
+only on tag with travis :
+
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: make pushed.txt
+      on:
+        appveyor_repo_tag: true  
+
+Regular commits won't run the ``deploy`` part any more. You have to execute the following commands :
+
+    git tag v1.0
+    git push --tags
+    
+This will help you trace versions you consider stable. You can also synchronise the tags with 
+the ``version`` parameter in your datapackage.json.
+
+### When the source data change
+
+When we know the source data has changed, ie the [wikipedia page about SP500](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) 
+in our example, we don't need to check out the project and run it on our computer any 
+more. Now that we have a working travis project, we can just go our [project](https://travis-ci.org/lexman/ex-continuous-processing) and 
+click *Restart build* to update the data !
+
+### But I don't want to spent my time checking if the source data has changed
+
+You can configure your project to run every day, in order to follow updates on the source data. As explained 
+in the [travis doc](https://docs.travis-ci.com/user/cron-jobs/), you need to mail the travis support to enable this option.
+
+But this is the end of your journey : once it's done, your project auto updates every day ! Congratulations !
+
+
+
+## What if ?
+
+### What if I make a branch ?
 
       
 What if ?
