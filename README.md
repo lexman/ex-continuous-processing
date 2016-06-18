@@ -135,17 +135,81 @@ The git part of this code needs to be explained :
     
 # Configure travis-ci to run the project
 
-At the moment, if we push the code above to github, travis-ci will fail because it has not been configured yet. We 
-need to modify the ``.travis.yml`` file in order to configure git.
+## Configure the ssh key
 
-before_script:
-  - echo $SSH_PUSH_KEY > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - cat ~/.ssh/config
-  - git config --global user.email "datasets-update-bot@lexman.org"
-  - git config --global user.name "Update bot"
+At the moment, if we push the code above to github, travis-ci will fail because it has not been configured yet. We'll have to enter
+the private key in the project's [settings](https://travis-ci.org/lexman/ex-continuous-processing/settings) so that travis 
+can write to github.
+
+SCREENSHOT
+
+Open your private key with your favorite text editor and copy the inner part **without** the header (``-----BEGIN RSA PRIVATE KEY-----``) nor
+the footer (``-----END RSA PRIVATE KEY-----``) and paste it into travis settings as an environment variable called ``SSH_PUSH_KEY``. Your 
+browser will paste it into one line. Before you add the variable, make sure the *Display value in build log* button is set to off, so that 
+your key remains secret all the time.
+
+SCREENSHOT
+
+Now we'll have to recompose the key in the build, by adding a ``before_script`` section in the [.travis.yml](.travis.yml) file :
+
+    before_script:
+    # Make the the ssh key available to git
+      - echo "-----BEGIN RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
+      - echo "$SSH_PUSH_KEY" | sed 's/ /\n/g' >> ~/.ssh/id_rsa
+      - echo "-----END RSA PRIVATE KEY-----" >> ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+
+## Configure git
+
+We also have to add the ``publish`` remote to the repository in the ``before_script`` section, as we have done in local :
+
+    # Add remote for ssh access
+      - git remote add publish git@github.com:$TRAVIS_REPO_SLUG.git
 
 
+Note that we used the travis ``$TRAVIS_REPO_SLUG`` variable to name the project's repository, so that future forks won't have to 
+edit the .travis.yml file.
+
+We also have to set a few more things in git, to avoid useless warning messages and set our identity for commits. The the overall 
+``install`` section should look like :
+
+    install:
+      - pip install --upgrade -r scripts/requirements.txt
+    # Avoid warnings from git :
+      - git config --global push.default simple
+      - git config --global user.email "you@your-commit-mail.com"
+      - git config --global user.name "Your commit bot name"
+
+After all this configuration, Travis will be able to write to our repository...      
+
+## Publish !
+
+Travis has a specific step for deploying a build that is well suited for our task :
+
+    deploy:
+      skip_cleanup: true
+      provider: script
+      script: make pushed.txt
+
+``provider: script`` means we'll run a shell script, and the script is ``make pushed.txt``. The other option ``skip_cleanup: true`` 
+is to prevent travis from reverting the changes we made in the build before publish.
+
+
+## Run the script on the right branch
+
+Unfortunately this is not enough yet to work, because travis checks out the repository in 
+[detached head state](http://alblue.bandlem.com/2011/08/git-tip-of-week-detached-heads.html) so we've got
+to get back on the branch we're building to be able to commit. We can fix it in ``script:``, 
+but it is easier to add a ``before_deploy`` section :
+
+    before_deploy:
+    # Git is in detached HEAD, so we get back on the branch we are supposed to be
+      - git checkout -B $TRAVIS_BRANCH 
+
+Now we can see our travis build 
+
+      
+What if ?
   
 [Skip ci]
 
@@ -158,3 +222,7 @@ before_script:
     
     
 Tags
+
+Discipline with errors
+
+Cheat sheet
