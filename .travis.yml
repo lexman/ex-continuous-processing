@@ -31,4 +31,4 @@ deploy:
   provider: script
   script: make pushed.txt
   on:
-    appveyor_repo_tag: true  
+    tags: true
