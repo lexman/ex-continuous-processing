@@ -216,26 +216,6 @@ instruction will be changed to :
 
 ## More control over your script
 
-### But I don't want to publish updated data every time I push some change !
-
-If you're used to commit half finished scripts and you want to control when you publish the data, you can deploy 
-only on tag with travis :
-
-    deploy:
-      skip_cleanup: true
-      provider: script
-      script: make pushed.txt
-      on:
-        appveyor_repo_tag: true  
-
-Regular commits won't run the ``deploy`` part any more. You have to execute the following commands :
-
-    git tag v1.0
-    git push --tags
-    
-This will help you trace versions you consider stable. You can also synchronise the tags with 
-the ``version`` parameter in your datapackage.json.
-
 ### When the source data change
 
 When we know the source data has changed, ie the [wikipedia page about SP500](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) 

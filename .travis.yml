@@ -25,13 +25,8 @@ script:
 before_deploy:
 # Git is in detached HEAD, so we get back on the branch we are supposed to be
   - git checkout -B $TRAVIS_BRANCH
-  - git status
-  - echo TRAVIS_BRANCH=$TRAVIS_BRANCH
-  - echo TRAVIS_TAG=$TRAVIS_TAG
 
 deploy:
   skip_cleanup: true
   provider: script
   script: make pushed.txt
-  on:
-    tags: true
