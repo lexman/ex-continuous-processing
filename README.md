@@ -255,11 +255,24 @@ But this is the end of your journey : once it's done, your project auto updates 
 ## What if ?
 
 ### What if I make a branch ?
+Travis will update the data on the new branch ! Thanks to ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
 
-      
-What if ?
-  
-[Skip ci]
+### What if someone forks the project ?
+Making the data will still succeed, but the pushing part will fail. The owner of the new project will have to set a new 
+couple of keys : the public key in the github account, and the private key in the travis settings of the project
+
+### What if I restart a former build ?
+Restarting a build which is not the last of a branch will fail. But what did you expect ? Only the last commit is allowed 
+to publish on a branch or it would be a mess ! Pushing will display this error message when trying to run the publish code :
+
+    To git@github.com:lexman/ex-continuous-processing.git
+     ! [rejected]        master -> master (non-fast-forward)
+    error: failed to push some refs to 'git@github.com:lexman/ex-continuous-processing.git'
+    hint: Updates were rejected because the tip of your current branch is behind
+    hint: its remote counterpart. Integrate the remote changes (e.g.
+    hint: 'git pull ...') before pushing again.
+    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+    make: *** [pushed.txt] Error 1
 
 
 # IDEAS
