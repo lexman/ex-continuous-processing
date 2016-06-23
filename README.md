@@ -41,9 +41,9 @@ directory in which the ``Makefile`` retrieve remote data to create the core of t
 Also, you need to have tests to validate the data produced **before** you publish it. See if you don't have tests, stop 
 reading this and jump to this really [good article](http://okfnlabs.org/blog/2016/05/17/automated-data-validation.html).
 
-So the [``Makefile``](scripts/Makefile) in your project should look like our example's :
+So the [``scripts/Makefile``](scripts/Makefile) in your project should look like our example's :
 
-    all: ../data/sp500-companies.csv valid.txt
+    all: valid.txt
 
     List_of_S%26P_500_companies.html:
         curl -o List_of_S%26P_500_companies.html "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
@@ -64,14 +64,14 @@ So the [``Makefile``](scripts/Makefile) in your project should look like our exa
 Where [scrape-wikipedia.py](scripts/scrape-wikipedia.py) extracts the table from the wikipedia page into a csv file and [test-data.py](scripts/test-data.py)
 tests the data.
 
-## Project must be automated with Travis
-Obviously, you'll need a [travis](http://travis-ci.org) account !
+### Project must be automated with Travis
+First, you'll need a [travis](http://travis-ci.org) account !
 
 If you haven't added the project to travis-ci yet, go to your travis profile and switch the project on. Then you can add a ``.travis`` file :
 
     language: python
     python:
-      - 3.4
+      - 2.7
 
     install:
       - pip install --upgrade -r scripts/requirements.txt
@@ -80,26 +80,27 @@ If you haven't added the project to travis-ci yet, go to your travis profile and
       - cd scripts
       - make
 
-NowNow every time you commit a change in the repository, the data is validated by travis. You'll be notified if the data is invalid.
+Now every time you commit a change in the repository, the data is validated by travis. You'll be notified if the data is invalid.
 
-## How to update the datapackage automatically ?
+## How to update the datapackage from the Makefile ?
 
 How to commit file ``sp500-companies.csv`` and push it back to the repository once it has been processed ?
 
 ### Authentication on github
-To push data to a git repository on github, you need to be authenticated, and the git way is to use ssh keys. We'll create 
-a specific key for the project :
+To push data to a git repository on github, you need to be authenticated, and the git way is to use ssh keys. So we'll create 
+a specific key set for the project :
 
-    ssh-keygen -t rsa -b 4096 -C "ex-continuous-processing" -f ~/.ssh/ex-continuous-processing
+    ssh-keygen -t rsa -b 4096 -C "SSh key for repository ex-continuous-processing" -f ~/.ssh/ex-continuous-processing
 
 This command creates two files : 
-  * the public key ``ex-continuous-processing.pub`` is the file you can distribute to servers to allow your connections
-  * the private key ``ex-continuous-processing`` is the file you can keep secret on your computer that lets you connect on a server
+  * the public key ``ex-continuous-processing.pub`` is the file you can distribute so that servers allow your connections
+  * the private key ``ex-continuous-processing`` is the file you need to keep secret on your computer that lets you connect on a server
 
 The easiest way is to be able to push to github is to 
 [add the public key to the repository](https://developer.github.com/guides/managing-deploy-keys/#deploy-keys) :
-In the repository's *Settings > Deploy Keys*, let's add a key by pasting the content of ex-continuous-processing.pub. 
-SCREENSHOT
+In the repository's *Settings > Deploy Keys*, we'll add a key by pasting the content of ex-continuous-processing.pub. 
+
+![Add public key to github project](pub_key_github.png)
 
 Now we can use the private key to write on the repository.
 
@@ -136,7 +137,7 @@ This means that we can share the changes on github with the command ``git push p
     git commit -m "Testing write from local workstation"
     git push publish
 
-And roll-back everything to normal :
+This should work without asking password. Now let's roll-back everything to normal :
 
     git rm test-write
     git commit -m "Test has succeeded"
@@ -146,23 +147,30 @@ And roll-back everything to normal :
 ### Push the changes after processing
 Now that our workstation is able to write to github, we can automate publication with this new rule at the end of the ``Makefile`` :
 
-    pushed.txt: valid.txt ../data/sp500-companies.csv
+    pushed.txt: valid.txt
         git add ../data/sp500-companies.csv
-        git commit -m "[data] automatic update" || exit 0
+        git commit -m "[data][skip ci] automatic update" || exit 0
         git push publish
-        echo "Update has been pushed if there was some change" > pushed.txt
+        echo "Update has been pushed if there was a change" > pushed.txt
     
-The first line ``pushed.txt: valid.txt ../data/sp500-companies.csv`` means that validation of data must have succeeded before we try publishing. The last 
-line creates file ``pushed.txt`` so that running ``make`` again won't run this code again, unless ``valid.txt`` has changed.
+The first line ``pushed.txt: valid.txt`` means that validation of data must have succeeded before we try publishing. The last 
+line creates file ``pushed.txt`` so that running ``make`` again won't run this code again, unless ``valid.txt`` has changed (which means
+something has changed in the data).
 
 The git part of this code needs to be explained :
 * If there has been no change in ``../data/sp500-companies.csv``, ``git add`` will succeed but won't add any change to the repository. In this case, ``|| exit 0`` in the ``git commit`` line prevents the command from failing... And ``make`` can go on with ``git push`` that will succeed even if there is nothing to publish.
 * If there has been some change in file ``../data/sp500-companies.csv``, the code is pretty straightforward... 
     
+We'll also change the main rule of the Makefile, because now the purpose of the project is to publish :
+
+    all: valid.txt
+
+Let's see what it does :
+
     $ make pushed.txt
     > blabla
     
-## Configure travis-ci to run the project
+## Run the project with travis-ci
 
 ### Configure the ssh key
 
@@ -262,18 +270,18 @@ in the [travis doc](https://docs.travis-ci.com/user/cron-jobs/), you need to mai
 But this is the end of your journey : once it's done, your project auto updates every day ! Congratulations !
 
 
-## What if ?
+## How does it affect usage of my tools ?
 
-### What if I branch ?
-Travis will update the data on the new branch ! Thanks to ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
+### What if I create a branch ?
+Travis will [update the data on the new branch](https://travis-ci.org/lexman/ex-continuous-processing/builds/139654598) ! Thanks to ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
 
 ### What if someone forks the project ?
-Making the data will still succeed, but the pushing part will fail. The owner of the new project will have to set a new 
-couple of keys : the public key in the github account, and the private key in the travis settings of the project
+Making the data will still succeed, but the pushing part will fail. The owner of the new project will have to configure a new 
+set of keys : the public key in the github account, and the private key in the travis settings of the project.
 
 ### What if I restart a former build ?
 Restarting a build which is not the last of a branch will fail. But what did you expect ? Only the last commit is allowed 
-to publish on a branch or it would be a mess ! Pushing will display this error message :
+to publish on a branch, because it would be a mess if you could publish out-of-date data... Pushing will display this error message :
 
     To git@github.com:lexman/ex-continuous-processing.git
      ! [rejected]        master -> master (non-fast-forward)
