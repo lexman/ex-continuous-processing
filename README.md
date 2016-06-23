@@ -313,8 +313,8 @@ to publish on a branch, because it would be a mess if you could publish out-of-d
 
 Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is 
 demanding because experience shows builds do break. In our 
-example the structure of the wikipedia page is likely to change when people edit it so the [scraping script](scripts/scrape.py) should 
-be adapted. Also travis will be updated and default python could migrate to version 3. 
+example the structure of the wikipedia page is likely to change when people edit it so the [scraping script](scripts/scrape-wikipedia.py) should 
+be fixed. Also travis will be updated and default python could migrate to version 3. 
 
 When build breaks, experience with continuous integration shows that it should be repaired quickly or it's never done. Also 
 all the value of bringing online new data, is void if existing ones are broken. That's why it's important to be able to work locally 
