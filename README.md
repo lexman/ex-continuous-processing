@@ -163,12 +163,27 @@ The git part of this code needs to be explained :
     
 We'll also change the main rule of the Makefile, because now the purpose of the project is to publish :
 
-    all: valid.txt
+    all: pushed.txt
 
-Let's see what it does :
+Let's see what it does (it there was no change in the wikipedia page) :
 
-    $ make pushed.txt
-    > blabla
+    $ make
+    > git add ../data/sp500-companies.csv
+    > git commit -m "[data][skip ci] automatic update" || exit 0
+    > # On branch master
+    > # Your branch is up-to-date with 'origin/master'.
+    > #
+    > # Untracked files:
+    > #	List_of_S%26P_500_companies.html
+    > #	valid.txt
+    > #
+    > nothing added to commit but untracked files present
+    > git push publish
+    > Warning: Permanently added the RSA host key for IP address '192.30.252.131' to the list of known hosts.
+    > Everything up-to-date
+    > echo "Update has been pushed if there was a change" > pushed.txt
+    
+Now we'd need to run from travis rather than our workstation.
     
 ## Run the project with travis-ci
 
@@ -178,14 +193,14 @@ At the moment, if we push the code above to github, travis-ci will fail because 
 the private key in the project's [settings](https://travis-ci.org/lexman/ex-continuous-processing/settings) so that travis 
 can write to github.
 
-SCREENSHOT
+![settings in travis](travis_find_settings.png)
 
 Open your private key with your favourite text editor and copy the inner part **without** the header (``-----BEGIN RSA PRIVATE KEY-----``) nor
 the footer (``-----END RSA PRIVATE KEY-----``) and paste **into quotes** it into travis settings as an environment variable called ``SSH_PUSH_KEY``. Your 
 browser will paste it into one line. Before you add the variable, make sure the *Display value in build log* button is set to off, so that 
 your key remains secret all the time.
 
-SCREENSHOT
+![set private key in travis](travis_set_key.png)
 
 Now we'll have to recompose the key in the build, by adding a ``before_script`` section in the [.travis.yml](.travis.yml) file :
 
@@ -227,9 +242,12 @@ Travis has a specific step for deploying a build that is well suited for our tas
       skip_cleanup: true
       provider: script
       script: make pushed.txt
+      on:
+        all_branches: true
 
 ``provider: script`` means we'll run a shell script, and the script is ``make pushed.txt``. The other option ``skip_cleanup: true`` 
-is to prevent travis from reverting the changes we made in the build before publish.
+is to prevent travis from reverting the changes we made in the build before publish. ``all_branches: true`` should not be difficult 
+to understand.
 
 
 ### Run the script on the right branch
@@ -243,11 +261,11 @@ but it is easier to add a ``before_deploy`` section :
     # Git is in detached HEAD, so we get back on the branch we are supposed to be
       - git checkout -B $TRAVIS_BRANCH 
 
-Now we can see our travis build green !
+After we push this last change, we can see our travis build green ! At last !
 
 ### One more step
 
-We can see two green builds ! Because when the first one succeeded, it pushed the data... Which triggered a new build !
+We can even see two green builds ! Because when the first one succeeded, it pushed the data... Which triggered a new build !
 We have to add [Skip ci] to the commit message to prevent endless builds. So in the ``Makefile``, the ``git commit`` 
 instruction will be changed to :
 
@@ -255,25 +273,25 @@ instruction will be changed to :
 
 ## More control over your script
 
-### When the source data change
+### When the source data changes
 
 When we know the source data has changed, ie the [wikipedia page about SP500](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) 
 in our example, we don't need to check out the project and run it on our computer any 
 more. Now that we have a working travis project, we can just go our [project](https://travis-ci.org/lexman/ex-continuous-processing) and 
 click *Restart build* to update the data !
 
-### But I don't want to spent my time checking if the source data has changed
+### But I don't want to spent my time checking if the source data has changed...
 
 You can configure your project to run every day, in order to follow updates on the source data. As explained 
 in the [travis doc](https://docs.travis-ci.com/user/cron-jobs/), you need to mail the travis support to enable this option.
 
-But this is the end of your journey : once it's done, your project auto updates every day ! Congratulations !
+Now this is the end of your journey : once it's done, your **project auto updates every day** ! Congratulations !
 
 
 ## How does it affect usage of my tools ?
 
 ### What if I create a branch ?
-Travis will [update the data on the new branch](https://travis-ci.org/lexman/ex-continuous-processing/builds/139654598) ! Thanks to ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
+Travis will [update the data on the new branch](https://travis-ci.org/lexman/ex-continuous-processing/builds/139785456) ! Thanks to ``on: all_branches: true`` and ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
 
 ### What if someone forks the project ?
 Making the data will still succeed, but the pushing part will fail. The owner of the new project will have to configure a new 
@@ -294,16 +312,19 @@ to publish on a branch, because it would be a mess if you could publish out-of-d
 
 ## Discipline
 
-Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is demanding because builds do break from times to times. In our 
-example the structure of the wikipedia page is likely to change when people edit it so scripts should be adapted. Also travis 
-can be updated and default python could migrate to version 3. When build breaks, experience with continuous integration shows
-that it should be repaired quickly or it's never done. Also all the value of bringing 
-online new data, is null if existing ones are broken. That's why it's important to be able to work locally to solve broken builds.
+Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is 
+demanding because experience shows builds do break. In our 
+example the structure of the wikipedia page is likely to change when people edit it so the [scraping script](scripts/scrape.py) should 
+be adapted. Also travis will be updated and default python could migrate to version 3. 
+
+When build breaks, experience with continuous integration shows that it should be repaired quickly or it's never done. Also 
+all the value of bringing online new data, is void if existing ones are broken. That's why it's important to be able to work locally 
+to solve broken builds.
 
 And remember, if you find a bug, you should add a test to avoid regressions !
 
 
 # Conclusion
-With a Makefile, tests, travis-ci and a bit of maintenance we can achieve *continuous processing* to provide up-to-date quality data. 
+With a Makefile, some tests, travis-ci and a bit of maintenance we can achieve **continuous processing** to provide up-to-date quality data. 
 
 The inpatients will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !

@@ -4,7 +4,7 @@ you already have read the [tutorial](README.md) and you want to go the fast way 
 
 
 ## Automate from travis
-Enable building your project from your travis account, then add the following ``.travis.yml`` (and 
+Enable building your project from your travis account, then add the following [``.travis.yml``](.tavis.yml) (and 
 don't forget to replace the identity of the committer) :
 
     language: python
@@ -39,6 +39,8 @@ don't forget to replace the identity of the committer) :
       skip_cleanup: true
       provider: script
       script: make pushed.txt
+      on:
+        all_branches: true
 
 ## Set the keys
 You should have a pair of public / private ssh keys, or create one with ``ssh-keygen -t rsa -b 4096 -C "SSh key for repository my-repository" -f ~/.ssh/my-repository``
@@ -57,7 +59,7 @@ You can also set the private key in your git config to work localy  :
 
 
 ## Add publish step to the build
-Make sure the tests are run after the data is build, and add the publish step. The end of your Makefile should look like this :
+Make sure the tests are run after the data is build, and add the publish step. The end of your [Makefile](scripts/Makefile) should look like this :
 
     valid.txt: ../data/MY_PRODUCED_FILE.csv ../datapackage.json test_data.py
         python test_data.py
