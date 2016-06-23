@@ -90,7 +90,7 @@ How to commit file ``sp500-companies.csv`` and push it back to the repository on
 To push data to a git repository on github, you need to be authenticated, and the git way is to use ssh keys. So we'll create 
 a specific key set for the project :
 
-    ssh-keygen -t rsa -b 4096 -C "SSh key for repository ex-continuous-processing" -f ~/.ssh/ex-continuous-processing
+    ssh-keygen -t rsa -b 4096 -C "Ssh key for repository ex-continuous-processing" -f ~/.ssh/ex-continuous-processing
 
 This command creates two files : 
   * the public key ``ex-continuous-processing.pub`` is the file you can distribute so that servers allow your connections

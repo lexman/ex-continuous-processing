@@ -41,7 +41,8 @@ don't forget to replace the identity of the committer) :
       script: make pushed.txt
 
 ## Set the keys
-You should have a pair of public / private ssh keys.
+You should have a pair of public / private ssh keys, or create one with ``ssh-keygen -t rsa -b 4096 -C "SSh key for repository my-repository" -f ~/.ssh/my-repository``
+
 
 In the settings of your github project, paste the public key :
 
