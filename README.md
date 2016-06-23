@@ -8,29 +8,28 @@ the list of companies from Wikipedia to creates a datapackage.
 Table of Contents
 =================
 
-  * [How to update a datapackage with travis-ci](#how-to-update-a-datapackage-with-travis-ci)
     * [Prerequisite](#prerequisite)
       * [Validation of data](#validation-of-data)
-    * [Project must be automated with Travis](#project-must-be-automated-with-travis)
-    * [How to update the datapackage automatically ?](#how-to-update-the-datapackage-automatically-)
+      * [Project must be automated with Travis](#project-must-be-automated-with-travis)
+    * [How to update the datapackage from the Makefile ?](#how-to-update-the-datapackage-from-the-makefile-)
       * [Authentication on github](#authentication-on-github)
       * [Work locally](#work-locally)
       * [Push the changes after processing](#push-the-changes-after-processing)
-    * [Configure travis-ci to run the project](#configure-travis-ci-to-run-the-project)
+    * [Run the project with travis-ci](#run-the-project-with-travis-ci)
       * [Configure the ssh key](#configure-the-ssh-key)
       * [Configure git](#configure-git)
       * [Publish !](#publish-)
       * [Run the script on the right branch](#run-the-script-on-the-right-branch)
       * [One more step](#one-more-step)
     * [More control over your script](#more-control-over-your-script)
-      * [When the source data change](#when-the-source-data-change)
-      * [But I don't want to spent my time checking if the source data has changed](#but-i-dont-want-to-spent-my-time-checking-if-the-source-data-has-changed)
-    * [What if ?](#what-if-)
-      * [What if I branch ?](#what-if-i-branch-)
+      * [When the source data changes](#when-the-source-data-changes)
+      * [But I don't want to spent my time checking if the source data has changed...](#but-i-dont-want-to-spent-my-time-checking-if-the-source-data-has-changed)
+    * [How does it affect usage of my tools ?](#how-does-it-affect-usage-of-my-tools-)
+      * [What if I create a branch ?](#what-if-i-create-a-branch-)
       * [What if someone forks the project ?](#what-if-someone-forks-the-project-)
       * [What if I restart a former build ?](#what-if-i-restart-a-former-build-)
     * [Discipline](#discipline)
-  * [Conclusion](#conclusion)
+    * [Conclusion](#conclusion)
 
 
 ## Prerequisite
@@ -324,7 +323,7 @@ to solve broken builds.
 And remember, if you find a bug, you should add a test to avoid regressions !
 
 
-# Conclusion
+## Conclusion
 With a Makefile, some tests, travis-ci and a bit of maintenance we can achieve **continuous processing** to provide up-to-date quality data. 
 
 The inpatients will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !
