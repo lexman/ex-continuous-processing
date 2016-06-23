@@ -5,6 +5,33 @@ __continuous processing__ : *deliver updated data every time something changes, 
 The whole tutorial exposes a simplified version of [s-and-p-500-companies](http://data.okfn.org/data/core/s-and-p-500-companies) which scrapes
 the list of companies from Wikipedia to creates a datapackage.
 
+Table of Contents
+=================
+
+  * [How to update a datapackage with travis-ci](#how-to-update-a-datapackage-with-travis-ci)
+    * [Prerequisite](#prerequisite)
+      * [Validation of data](#validation-of-data)
+    * [Project must be automated with Travis](#project-must-be-automated-with-travis)
+    * [How to update the datapackage automatically ?](#how-to-update-the-datapackage-automatically-)
+      * [Authentication on github](#authentication-on-github)
+      * [Work locally](#work-locally)
+      * [Push the changes after processing](#push-the-changes-after-processing)
+    * [Configure travis-ci to run the project](#configure-travis-ci-to-run-the-project)
+      * [Configure the ssh key](#configure-the-ssh-key)
+      * [Configure git](#configure-git)
+      * [Publish !](#publish-)
+      * [Run the script on the right branch](#run-the-script-on-the-right-branch)
+      * [One more step](#one-more-step)
+    * [More control over your script](#more-control-over-your-script)
+      * [When the source data change](#when-the-source-data-change)
+      * [But I don't want to spent my time checking if the source data has changed](#but-i-dont-want-to-spent-my-time-checking-if-the-source-data-has-changed)
+    * [What if ?](#what-if-)
+      * [What if I branch ?](#what-if-i-branch-)
+      * [What if someone forks the project ?](#what-if-someone-forks-the-project-)
+      * [What if I restart a former build ?](#what-if-i-restart-a-former-build-)
+    * [Discipline](#discipline)
+  * [Conclusion](#conclusion)
+
 
 ## Prerequisite
 This tutorial assumes you already have a git project that contains a datapackage. This project has a ``script`` 
