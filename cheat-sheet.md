@@ -68,5 +68,6 @@ Make sure the tests are run after the data is build, and add the publish step. T
         git push publish
         echo "Update has been pushed if there was a change" > pushed.txt
 
+    all: pushed.txt
 
 # Enjoy !
