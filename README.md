@@ -234,7 +234,7 @@ But this is the end of your journey : once it's done, your project auto updates 
 
 ## What if ?
 
-### What if I make a branch ?
+### What if I branch ?
 Travis will update the data on the new branch ! Thanks to ``git checkout -B $TRAVIS_BRANCH`` on ``before_deploy``...
 
 ### What if someone forks the project ?
@@ -243,7 +243,7 @@ couple of keys : the public key in the github account, and the private key in th
 
 ### What if I restart a former build ?
 Restarting a build which is not the last of a branch will fail. But what did you expect ? Only the last commit is allowed 
-to publish on a branch or it would be a mess ! Pushing will display this error message when trying to run the publish code :
+to publish on a branch or it would be a mess ! Pushing will display this error message :
 
     To git@github.com:lexman/ex-continuous-processing.git
      ! [rejected]        master -> master (non-fast-forward)
@@ -254,16 +254,15 @@ to publish on a branch or it would be a mess ! Pushing will display this error m
     hint: See the 'Note about fast-forwards' in 'git push --help' for details.
     make: *** [pushed.txt] Error 1
 
+## Discipline
+Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is demanding because builds do break from times to times. In our 
+example the structure of the wikipedia page is likely to change when people edit it so scripts should be adapted. Also travis 
+can be updated and default python could migrate to version 3. When build breaks, experience with continuous integration shows
+that it should be repaired quickly or it's never done. Also all the value of bringing 
+online new data, is null if existing ones are broken. That's why it's important to be able to work locally to solve broken builds.
 
-# IDEAS
+And remember, if you find a bug, you should add a test to avoid regressions !
 
-	git commit -m "[data] automatic update" || echo "No change" > pushed.txt ; exit 0
-	git push
-	echo "Update has been pushed if there was a change" > pushed.txt
-    
-    
-Tags
 
-Discipline with errors
-
-Cheat sheet
+# Conlusion
+With a Makefile, tests, travis-ci and a bit of maintenance we can achieve *continuous processing* to provide up-to-date quality data. 
