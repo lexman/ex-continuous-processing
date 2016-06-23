@@ -14,7 +14,7 @@ directory in which the ``Makefile`` retrieve remote data to create the core of t
 Also, you need to have tests to validate the data produced **before** you publish it. See if you don't have tests, stop 
 reading this and jump to this really [good article](http://okfnlabs.org/blog/2016/05/17/automated-data-validation.html).
 
-So the [``scripts/Makefile``](scritps/Makefile) in your project should look like our example's :
+So the [``Makefile``](scripts/Makefile) in your project should look like our example's :
 
     all: ../data/sp500-companies.csv valid.txt
 
@@ -53,11 +53,11 @@ If you haven't added the project to travis-ci yet, go to your travis profile and
       - cd scripts
       - make
 
-Now every time you commit a change in the repository, the data is validated by travis. You'll be notified if the data is invalid.
+NowNow every time you commit a change in the repository, the data is validated by travis. You'll be notified if the data is invalid.
 
 ## How to update the datapackage automatically ?
 
-The question now is : how to commit file ``sp500-companies.csv`` and push it back to the repository once it has been processed ?
+How to commit file ``sp500-companies.csv`` and push it back to the repository once it has been processed ?
 
 ### Authentication on github
 To push data to a git repository on github, you need to be authenticated, and the git way is to use ssh keys. We'll create 
@@ -71,7 +71,7 @@ This command creates two files :
 
 The easiest way is to be able to push to github is to 
 [add the public key to the repository](https://developer.github.com/guides/managing-deploy-keys/#deploy-keys) :
-In the repository's **Settings > Deploy Keys**, let's add a key by pasting the content of ex-continuous-processing.pub. 
+In the repository's *Settings > Deploy Keys*, let's add a key by pasting the content of ex-continuous-processing.pub. 
 SCREENSHOT
 
 Now we can use the private key to write on the repository.
@@ -92,10 +92,12 @@ We need to configure our ssh client to use the key we've created with github. Ad
         IdentityFile ~/.ssh/ex-continuous-processing
 
 We should be able to communicate with github :
-    $ ssh git@github
-    > bla bla bla
 
-The odds are that your local repository has not been cloned through ssh. That's why we'll add a **remote**
+    $ ssh git@github.com
+    > Hi lexman/ex-continuous-processing! You've successfully authenticated, but GitHub does not provide shell access.
+    > Connection to github.com closed.
+
+The odds are that your local repository has not been cloned through ssh. That's why we'll add a *remote*
 called ``publish`` to our git repository in order to be able to push the changes by ssh.
 
     git remote add publish git@github.com:lexman/ex-continuous-processing.git
