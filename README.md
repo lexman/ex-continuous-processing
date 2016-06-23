@@ -37,7 +37,9 @@ So the [``scripts/Makefile``](scritps/Makefile) in your project should look like
 Where [scrape-wikipedia.py](scripts/scrape-wikipedia.py) extracts the table from the wikipedia page into a csv file and [test-data.py](scripts/test-data.py)
 tests the data.
 
-### Automate the project with Travis
+## Project must be automated with Travis
+Obviously, you'll need a [travis](http://travis-ci.org) account !
+
 If you haven't added the project to travis-ci yet, go to your travis profile and switch the project on. Then you can add a ``.travis`` file :
 
     language: python
@@ -51,7 +53,7 @@ If you haven't added the project to travis-ci yet, go to your travis profile and
       - cd scripts
       - make
 
-Now every time you commit a change in the repository, the data is validatd by travis. You'll be notified if the data is invalid.
+Now every time you commit a change in the repository, the data is validated by travis. You'll be notified if the data is invalid.
 
 ## How to update the datapackage automatically ?
 
@@ -141,7 +143,7 @@ can write to github.
 
 SCREENSHOT
 
-Open your private key with your favorite text editor and copy the inner part **without** the header (``-----BEGIN RSA PRIVATE KEY-----``) nor
+Open your private key with your favourite text editor and copy the inner part **without** the header (``-----BEGIN RSA PRIVATE KEY-----``) nor
 the footer (``-----END RSA PRIVATE KEY-----``) and paste **into quotes** it into travis settings as an environment variable called ``SSH_PUSH_KEY``. Your 
 browser will paste it into one line. Before you add the variable, make sure the *Display value in build log* button is set to off, so that 
 your key remains secret all the time.
@@ -231,7 +233,6 @@ in the [travis doc](https://docs.travis-ci.com/user/cron-jobs/), you need to mai
 But this is the end of your journey : once it's done, your project auto updates every day ! Congratulations !
 
 
-
 ## What if ?
 
 ### What if I branch ?
@@ -255,6 +256,7 @@ to publish on a branch or it would be a mess ! Pushing will display this error m
     make: *** [pushed.txt] Error 1
 
 ## Discipline
+
 Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is demanding because builds do break from times to times. In our 
 example the structure of the wikipedia page is likely to change when people edit it so scripts should be adapted. Also travis 
 can be updated and default python could migrate to version 3. When build breaks, experience with continuous integration shows
@@ -264,5 +266,7 @@ online new data, is null if existing ones are broken. That's why it's important 
 And remember, if you find a bug, you should add a test to avoid regressions !
 
 
-# Conlusion
+# Conclusion
 With a Makefile, tests, travis-ci and a bit of maintenance we can achieve *continuous processing* to provide up-to-date quality data. 
+
+The inpatients will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !
