@@ -296,6 +296,10 @@ Travis will [update the data on the new branch](https://travis-ci.org/lexman/ex-
 Making the data will still succeed, but the pushing part will fail. The owner of the new project will have to configure a new 
 set of keys : the public key in the github account, and the private key in the travis settings of the project.
 
+### What if someone submit a pull request ?
+Travis will make the data and will run the tests, so you'll know if the data is valid. But hopefully it will [skip the deploy phase](https://docs.travis-ci.com/user/deployment#Pull-Requests).
+So you'll know how a a pull request behave, except if the deploy phase was changed.
+
 ### What if I restart a former build ?
 Restarting a build which is not the last of a branch will fail. But what did you expect ? Only the last commit is allowed 
 to publish on a branch, because it would be a mess if you could publish out-of-date data... Pushing will display this error message :
@@ -325,5 +329,7 @@ And remember, if you find a bug, you should add a test to avoid regressions !
 
 ## Conclusion
 With a Makefile, some tests, travis-ci and a bit of maintenance we can achieve **continuous processing** to provide up-to-date quality data. 
+It's very well suited for small data (less then 300 MB) and short processing (less 10 minutes) where you can start from scratch, which is 
+perfect for core datapackges !
 
 The inpatients will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !
