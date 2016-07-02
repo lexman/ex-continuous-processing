@@ -297,7 +297,7 @@ Making the data will still succeed, but the pushing part will fail. The owner of
 set of keys : the public key in the github account, and the private key in the travis settings of the project.
 
 ### What if someone submit a pull request ?
-Travis will make the data and will run the tests, so you'll know if the data is valid. But hopefully it will [skip the deploy phase](https://docs.travis-ci.com/user/deployment#Pull-Requests).
+Travis will [make the data and will run the tests](https://travis-ci.org/datasets/s-and-p-500-companies/builds/140036140), so you'll know if the data is valid. But hopefully it will [skip the deploy phase](https://docs.travis-ci.com/user/deployment#Pull-Requests).
 So you'll know how a a pull request behave, except if the deploy phase was changed.
 
 ### What if I restart a former build ?
@@ -328,8 +328,9 @@ And remember, if you find a bug, you should add a test to avoid regressions !
 
 
 ## Conclusion
-With a Makefile, some tests, travis-ci and a bit of maintenance we can achieve **continuous processing** to provide up-to-date quality data. 
-It's very well suited for small data (less then 300 MB) and short processing (less 10 minutes) where you can start from scratch, which is 
+With a Makefile, some tests, travis-ci and a bit of maintenance we can achieve **continuous processing** to provide up-to-date quality data :
+ anyone can contribute through the well know process of pull-request and validation and publication of datasets will be automatic.
+It's very well suited for small data (less then 300 MB) and when the whole processing is short (less 10 minutes), That's why it is 
 perfect for core datapackges !
 
-The inpatients will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !
+The impatient will implement this tutorial from the shorter [cheat sheet](cheat-sheet.md) !
