@@ -318,7 +318,10 @@ to publish on a branch, because it would be a mess if you could publish out-of-d
 
 ## Discipline
 
-Once *continuous processing* has been achieved, data will update automatically, but it's not effortless. Maintaining this system is 
+Once *continuous processing* has been achieved, data will update automatically, but it's not effortless.
+
+### Always fix broken windows
+Maintaining this system is 
 demanding because experience shows builds do break. In our 
 example the structure of the wikipedia page is likely to change when people edit it so the [scraping script](scripts/scrape-wikipedia.py) should 
 be fixed. Also travis will be updated and default python could migrate to version 3. 
@@ -327,7 +330,13 @@ When build breaks, experience with continuous integration shows that it should b
 all the value of bringing online new data, is void if existing ones are broken. That's why it's important to be able to work locally 
 to solve broken builds.
 
-And remember, if you find a bug, you should add a test to avoid regressions !
+### Only push if it works
+You don't want to share some code or some data that does not work. That's why we configured our project to work locally. You should
+always run the project before you push, to detect failures. And avoid the terrible pattern *fix -> push-to-travis -> find-a-new-bug-in-the-logs -> redo* : it's
+very time consuming and harmful for your co-workers and people using your data.
+
+### If you find a bug add a test
+And remember, before you fix a bug, you should add a test to prevent future regressions !
 
 
 ## Conclusion
