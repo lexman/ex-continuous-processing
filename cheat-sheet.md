@@ -1,6 +1,39 @@
-# Continuous processing with Travis-ci cheat sheet
+# Continuous processing with Travis-ci : cheat sheet
 
 you already have read the [tutorial](README.md) and you want to go the fast way to apply it to your project.
+
+
+## Add publish step to the build
+Make sure the tests are run after the data is build, and add the publish step. The end of your [Makefile](scripts/Makefile) should look like this :
+
+    valid.txt: ../data/MY_PRODUCED_FILE.csv ../datapackage.json test_data.py
+        python test_data.py
+        echo "Datapackage is valid" > valid.txt
+
+    pushed.txt: valid.txt
+        git add ../data/MY_PRODUCED_FILE.csv
+        git commit -m "[data][skip ci] automatic update" || exit 0
+        git push publish
+        echo "Update has been pushed if there was a change" > pushed.txt
+
+    all: pushed.txt
+
+## Set the keys
+You should have a pair of public / private ssh keys, or create one with ``ssh-keygen -t rsa -b 4096 -C "SSh key for repository my-repository" -f ~/.ssh/my-repository``
+
+In the settings of your github project, paste the public key :
+![Add public key to github project](pub_key_github.png)
+
+In the settings of your travis project, paste the **inner part** of your private key (without header nor footer) **into quotes** to create
+a ``SSH_PUSH_KEY`` runtime variable :
+
+![set private key in travis](travis_set_key.png)
+
+You should also set the private key in your local git config to work (and debug !) on your workstation  :
+    Host github.com
+        HostName github.com
+        User git
+        IdentityFile ~/.ssh/my-ssh-private-key
 
 
 ## Automate from travis
@@ -42,35 +75,6 @@ don't forget to replace the identity of the committer) :
       on:
         all_branches: true
 
-## Set the keys
-You should have a pair of public / private ssh keys, or create one with ``ssh-keygen -t rsa -b 4096 -C "SSh key for repository my-repository" -f ~/.ssh/my-repository``
 
-
-In the settings of your github project, paste the public key :
-
-In the settings of your travis project, paste the **inner part** of your private key (without header nor foter) **into quotes** to create
-a ``SSH_PUSH_KEY`` variable.
-
-You can also set the private key in your git config to work localy  :
-    Host github.com
-        HostName github.com
-        User git
-        IdentityFile ~/.ssh/my-ssh-private-key
-
-
-## Add publish step to the build
-Make sure the tests are run after the data is build, and add the publish step. The end of your [Makefile](scripts/Makefile) should look like this :
-
-    valid.txt: ../data/MY_PRODUCED_FILE.csv ../datapackage.json test_data.py
-        python test_data.py
-        echo "Datapackage is valid" > valid.txt
-
-    pushed.txt: valid.txt
-        git add ../data/MY_PRODUCED_FILE.csv
-        git commit -m "[data][skip ci] automatic update" || exit 0
-        git push publish
-        echo "Update has been pushed if there was a change" > pushed.txt
-
-    all: pushed.txt
-
-# Enjoy !
+# Enjoy...
+Work without friction with your team !
