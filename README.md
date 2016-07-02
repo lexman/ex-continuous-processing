@@ -284,7 +284,10 @@ click *Restart build* to update the data !
 You can configure your project to run every day, in order to follow updates on the source data. As explained 
 in the [travis doc](https://docs.travis-ci.com/user/cron-jobs/), you need to mail the travis support to enable this option.
 
-Now this is the end of your journey : once it's done, your **project auto updates every day** ! Congratulations !
+Also, you'll have to remove the ``[skip ci]`` tag from the commit message, because it would prevent the build from being triggered... So 
+you'll have to bear the *double build*.
+
+Now this is the end of your journey : once it's done, your **project auto updates every day and on  every commit** ! Congratulations !
 
 
 ## How does it affect usage of my tools ?

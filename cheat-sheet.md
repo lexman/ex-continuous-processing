@@ -75,6 +75,12 @@ don't forget to replace the identity of the committer) :
       on:
         all_branches: true
 
+## Enable regular build to update the data
+Ask the travis support to [enable cron jobs](https://docs.travis-ci.com/user/cron-jobs/) for your project, then add 
+a daily / weekly / monthly build.
 
-# Enjoy...
-Work without friction with your team !
+Also remove ``[skip ci] from the commit message in the ``pushed.txt`` of the ``scripts\Makefile`` to prevent travis from skipping the build.
+
+        
+## Enjoy...
+Ready to work with you team without friction !
