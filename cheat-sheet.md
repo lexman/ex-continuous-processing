@@ -37,7 +37,7 @@ You should also set the private key in your local git config to work (and debug 
 
 
 ## Automate from travis
-Enable building your project from your travis account, then add the following [``.travis.yml``](.tavis.yml) (and 
+Enable building your project from your travis account, then add the following [``.travis.yml``](.travis.yml) (and 
 don't forget to replace the identity of the committer) :
 
     language: python
@@ -79,7 +79,7 @@ don't forget to replace the identity of the committer) :
 Ask the travis support to [enable cron jobs](https://docs.travis-ci.com/user/cron-jobs/) for your project, then add 
 a daily / weekly / monthly build.
 
-Also remove ``[skip ci] from the commit message in the ``pushed.txt`` of the ``scripts\Makefile`` to prevent travis from skipping the build.
+Also remove ``[skip ci]`` from the commit message in the ``pushed.txt`` of the ``scripts\Makefile`` to prevent travis from skipping the build.
 
         
 ## Enjoy...
