@@ -27,8 +27,12 @@ Table of Contents
   * [How does it affect usage of my tools ?](#how-does-it-affect-usage-of-my-tools-)
     * [What if I create a branch ?](#what-if-i-create-a-branch-)
     * [What if someone forks the project ?](#what-if-someone-forks-the-project-)
+    * [What if someone submit a pull request ?](#what-if-someone-submit-a-pull-request-)
     * [What if I restart a former build ?](#what-if-i-restart-a-former-build-)
   * [Discipline](#discipline)
+    * [Always fix broken windows](#always-fix-broken-windows)
+    * [Only push if it works](#only-push-if-it-works)
+    * [If you find a bug add a test](#if-you-find-a-bug-add-a-test)
   * [Conclusion](#conclusion)
 
 
